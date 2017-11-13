@@ -145,11 +145,12 @@ def main(unused_argv=None):
   else:
     raise ValueError('--which_styles must be either a list of style indexes '
                      'or a dictionary mapping style indexes to weights.')
+  print("done")
 
 def handle(st):
+    print("begin...")
     tf.app.run(main)
-
-    print(st)
+    print("done")
 
 if __name__ == '__main__':
     tf.app.run(main)
