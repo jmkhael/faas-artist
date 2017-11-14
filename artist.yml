@@ -4,6 +4,8 @@ provider:
 
 functions:
   artist:
+    volumes:
+      ["/home/jmkhael/Dropbox/jmkhael-lx-workspace/faas-artist/artist/function:/root/function"]
     lang: Dockerfile
     handler: ./artist
     image: artist

@@ -122,6 +122,7 @@ def _multiple_styles(input_image, which_styles, output_dir):
 
 
 def main(unused_argv=None):
+  print("begin main...")
   FLAGS.num_styles=32
   FLAGS.checkpoint="/magenta-models/multistyle-pastiche-generator-varied.ckpt"
   FLAGS.input_image="input/content.jpg" # "$IMAGE"
@@ -129,6 +130,7 @@ def main(unused_argv=None):
   FLAGS.output_dir="out_content.jpg" # "out_""$IMAGE"
   FLAGS.output_basename="varied_styles"
 
+  print("loading image...")
   # Load image
   image = np.expand_dims(image_utils.load_np_image(
       os.path.expanduser(FLAGS.input_image)), 0)
@@ -139,8 +141,10 @@ def main(unused_argv=None):
 
   which_styles = ast.literal_eval(FLAGS.which_styles)
   if isinstance(which_styles, list):
+    print("multiple images...")
     _multiple_images(image, which_styles, output_dir)
   elif isinstance(which_styles, dict):
+    print("multiple styles...")
     _multiple_styles(image, which_styles, output_dir)
   else:
     raise ValueError('--which_styles must be either a list of style indexes '
@@ -148,7 +152,7 @@ def main(unused_argv=None):
   print("done")
 
 def handle(st):
-    print("begin...")
+    print("XXXXX...")
     tf.app.run(main)
     print("done")
 
