@@ -4,11 +4,9 @@ provider:
 
 functions:
   artist:
-    volumes:
-      ["/home/jmkhael/Dropbox/jmkhael-lx-workspace/faas-artist/artist/function:/root/function"]
     lang: Dockerfile
     handler: ./artist
-    image: artist
+    image: jmkhael/faas-artist:latest
     environment:
       TF_CPP_MIN_LOG_LEVEL: "3"
       read_timeout: "200"

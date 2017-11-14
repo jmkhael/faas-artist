@@ -1,0 +1,37 @@
+version: "3"
+services:
+    gateway:
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock"
+        ports:
+            - 8080:8080
+        image: functions/gateway:0.6.2
+        networks:
+            - functions
+        environment:
+            dnsrr: "true"  # Temporarily use dnsrr in place of VIP while issue persists on PWD
+            read_timeout: "200"
+            write_timeout: "200"
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+
+    # Node.js gives OS info about the node (Host)
+    artist:
+        image: jmkhael/faas-artist:latest
+        labels:
+            function: "true"
+        depends_on:
+            - gateway
+        networks:
+            - functions
+        environment:
+            no_proxy: "gateway"
+            https_proxy: $https_proxy
+            TF_CPP_MIN_LOG_LEVEL: "3"
+            read_timeout: "200"
+            write_timeout: "200"
+
+networks:
+    functions:
+        driver: overlay
