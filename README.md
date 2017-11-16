@@ -29,6 +29,10 @@ Original             |  Styled
 :-------------------------:|:-------------------------:
 ![Original](/artist/input/vespa-faas.jpg?raw=true "Original Vespa and Faas") | ![Styled](/styled/vespa-faas-varied-24.jpg?raw=true "Varied style 24")
 ![Original](/artist/input/faas-community.jpg?raw=true "Original Vespa and Faas") | ![Styled](/styled/faas-community-varied-6.jpg?raw=true "Varied style 6")
+
+
+The stylized image were generated using:
+
 ```
 curl -X POST -H X-style-name:varied -H X-style-index:24 \
   --data-binary @artist/input/vespa-faas.jpg \
