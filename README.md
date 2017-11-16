@@ -19,6 +19,7 @@ Original             |  Styled
 :-------------------------:|:-------------------------:
 ![Original](/artist/input/blizzard.jpg?raw=true "Original Blizzard") | ![Styled](/styled/blizzard-styled-monet.jpg?raw=true "Monet style 1")
 
+The stylized image was generated using:
 ```
 curl -X POST -H X-style-name:monet -H X-style-index:1 \
   --data-binary @artist/input/blizzard.jpg \
@@ -28,8 +29,9 @@ curl -X POST -H X-style-name:monet -H X-style-index:1 \
 ### Generates Varied style
 Original             |  Styled
 :-------------------------:|:-------------------------:
-![Original](/artist/input/vespa-faas.jpg?raw=true "Original Vespa and Faas") ![Styled](/styled/vespa-faas-varied-24.jpg?raw=true "Varied style 24")
+![Original](/artist/input/vespa-faas.jpg?raw=true "Original Vespa and Faas") | ![Styled](/styled/vespa-faas-varied-24.jpg?raw=true "Varied style 24")
 
+The stylized image was generated using:
 ```
 curl -X POST -H X-style-name:varied -H X-style-index:24 \
   --data-binary @artist/input/vespa-faas.jpg \
