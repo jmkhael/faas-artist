@@ -38,7 +38,7 @@ curl -X POST -H X-style-name:varied -H X-style-index:24 \
   --data-binary @artist/input/vespa-faas.jpg \
   "http://localhost:8080/function/artist" > styled/vespa-faas-varied-24.jpg
 ```  
-|
+
 ```
 curl -X POST -H X-style-name:varied -H X-style-index:6 \
   --data-binary @artist/input/faas-community.jpg \
