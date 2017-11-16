@@ -18,11 +18,14 @@ from __future__ import division
 from __future__ import print_function
 
 import ast
+import io
 import os
+import tempfile
 
 # internal imports
 
 import numpy as np
+import scipy.misc
 import tensorflow as tf
 
 from magenta.models.image_stylization import image_utils
@@ -99,6 +102,23 @@ def _multiple_images(input_image, which_styles, output_dir):
           stylized_image[None, ...],
           '{}/{}_{}.png'.format(output_dir, FLAGS.output_basename, which))
 
+      # Print the image back to stdout
+      np_stream_image_stdout(stylized_image)
+
+def np_stream_image_stdout(image, save_format='jpeg'):
+  image = np.uint8(image * 255.0)
+  buf = io.BytesIO()
+  scipy.misc.imsave(buf, np.squeeze(image, 0), format=save_format)
+  buf.seek(0)
+  print(buf.getvalue())
+  #f = tf.gfile.GFile(output_file, 'w')
+  #f.write(buf.getvalue())
+  #f.close()
+
+def np_stream_stdin_image(output_file, data):
+  f = tf.gfile.GFile(output_file, 'w')
+  f.write(data)
+  f.close()
 
 def _multiple_styles(input_image, which_styles, output_dir):
   """Stylizes image into a linear combination of styles and writes to disk."""
@@ -120,17 +140,57 @@ def _multiple_styles(input_image, which_styles, output_dir):
         os.path.join(output_dir, '%s_%s.png' % (
             FLAGS.output_basename, _describe_style(which_styles))))
 
+    # Print the image back to stdout
+    np_stream_image_stdout(stylized_image)
+
+# This is where the stdin gets written - not perfect, but you can always make it better ;)
+input_image_name = "input/stdin.jpg"
 
 def main(unused_argv=None):
-  print("begin main...")
-  FLAGS.num_styles=32
-  FLAGS.checkpoint="/magenta-models/multistyle-pastiche-generator-varied.ckpt"
-  FLAGS.input_image="input/content.jpg" # "$IMAGE"
-  FLAGS.which_styles="{24:1}" #"{$i:1}"
-  FLAGS.output_dir="out_content.jpg" # "out_""$IMAGE"
-  FLAGS.output_basename="varied_styles"
+  #print("begin main...")
 
-  print("loading image...")
+  style_name = os.environ.get('Http_X_Style_Name', 'varied')
+  style_index = os.environ.get('Http_X_Style_Index', '1')
+
+  #print("Using style: " + style_name)
+  #print("Using index: " + style_index)
+
+# Monet
+# ---------------------
+# --num_styles=10 \
+# --checkpoint=/magenta-models/multistyle-pastiche-generator-monet.ckpt \
+# --input_image=$IMAGE \
+# --which_styles="{$i:1}" \
+# --output_dir="out_""$IMAGE" \
+# --output_basename="monet_styles"
+
+# Varied
+# ---------------------
+# --num_styles=32 \
+# --checkpoint=/magenta-models/multistyle-pastiche-generator-varied.ckpt \
+# --input_image=$IMAGE \
+# --which_styles="{$i:1}" \
+# --output_dir="out_""$IMAGE" \
+# --output_basename="varied_styles"
+
+  if style_name == 'monet':
+    FLAGS.num_styles = 10
+    FLAGS.checkpoint = "/magenta-models/multistyle-pastiche-generator-monet.ckpt"
+    FLAGS.input_image = input_image_name
+    FLAGS.which_styles = "{%s:1}" % style_index #"{$i:1}"
+    FLAGS.output_dir = "out_content.jpg" # "out_""$IMAGE"
+    FLAGS.output_basename = "monet_styles"
+  elif style_name == 'varied':
+    FLAGS.num_styles = 32
+    FLAGS.checkpoint = "/magenta-models/multistyle-pastiche-generator-varied.ckpt"
+    FLAGS.input_image = input_image_name
+    FLAGS.which_styles = "{%s:1}" % style_index #"{$i:1}"
+    FLAGS.output_dir = "out_content.jpg" # "out_""$IMAGE"
+    FLAGS.output_basename = "varied_styles"
+  else:
+    raise ValueError('Style %s is not supported. Accepted values are "monet" or "varied"' % style_name)
+
+  #print("loading image...")
   # Load image
   image = np.expand_dims(image_utils.load_np_image(
       os.path.expanduser(FLAGS.input_image)), 0)
@@ -141,20 +201,24 @@ def main(unused_argv=None):
 
   which_styles = ast.literal_eval(FLAGS.which_styles)
   if isinstance(which_styles, list):
-    print("multiple images...")
+    #print("multiple images...")
     _multiple_images(image, which_styles, output_dir)
   elif isinstance(which_styles, dict):
-    print("multiple styles...")
+    #print("multiple styles...")
     _multiple_styles(image, which_styles, output_dir)
   else:
     raise ValueError('--which_styles must be either a list of style indexes '
                      'or a dictionary mapping style indexes to weights.')
-  print("done")
+  #print("done")
 
 def handle(st):
-    print("XXXXX...")
+    #print("XXXXX...")
+    np_stream_stdin_image(input_image_name, st)
+    #print(name)
+    #print(st)
+    #return
     tf.app.run(main)
-    print("done")
+    #print("done")
 
 if __name__ == '__main__':
     tf.app.run(main)
