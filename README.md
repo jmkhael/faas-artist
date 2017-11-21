@@ -1,8 +1,7 @@
-
 ## Context
 
 This repository holds the code for the OpenFaaS function to do style transfer.
-You ideally should read along the blog post on http://jmkhael.io/
+You ideally should read along the blog post on http://jmkhael.io/unleash-the-artist-within-tensorflow-and-openfaas/
 
 ## Get faas-cli
 ```
