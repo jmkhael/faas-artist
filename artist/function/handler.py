@@ -151,6 +151,7 @@ def main(unused_argv=None):
 
   style_name = os.environ.get('Http_X_Style_Name', 'varied')
   style_index = os.environ.get('Http_X_Style_Index', '1')
+  which_styles = os.environ.get('Http_X_Which_Styles', "{%s:1}" % style_index)
 
   #print("Using style: " + style_name)
   #print("Using index: " + style_index)
@@ -177,15 +178,15 @@ def main(unused_argv=None):
     FLAGS.num_styles = 10
     FLAGS.checkpoint = "/magenta-models/multistyle-pastiche-generator-monet.ckpt"
     FLAGS.input_image = input_image_name
-    FLAGS.which_styles = "{%s:1}" % style_index #"{$i:1}"
-    FLAGS.output_dir = "out_content.jpg" # "out_""$IMAGE"
+    FLAGS.which_styles = which_styles
+    FLAGS.output_dir = "out_content.jpg"
     FLAGS.output_basename = "monet_styles"
   elif style_name == 'varied':
     FLAGS.num_styles = 32
     FLAGS.checkpoint = "/magenta-models/multistyle-pastiche-generator-varied.ckpt"
     FLAGS.input_image = input_image_name
-    FLAGS.which_styles = "{%s:1}" % style_index #"{$i:1}"
-    FLAGS.output_dir = "out_content.jpg" # "out_""$IMAGE"
+    FLAGS.which_styles = which_styles
+    FLAGS.output_dir = "out_content.jpg"
     FLAGS.output_basename = "varied_styles"
   else:
     raise ValueError('Style %s is not supported. Accepted values are "monet" or "varied"' % style_name)

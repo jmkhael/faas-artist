@@ -2,7 +2,7 @@
 ## Context
 
 This repository holds the code for the OpenFaaS function to do style transfer.
-You ideally should read along the blog post on http://jmkhael.io/ 
+You ideally should read along the blog post on http://jmkhael.io/
 
 ## Get faas-cli
 ```
@@ -15,9 +15,9 @@ faas-cli build -f artist.yml
 faas-cli deploy -f artist.yml
 ```
 
-## Profit!
+## Style transfer
 
-### Generates Monet style
+#### Generates Monet style
 
 Original             |  Styled
 :-------------------------:|:-------------------------:
@@ -51,19 +51,30 @@ curl -X POST -H X-style-name:varied -H X-style-index:6 \
   "http://localhost:8080/function/artist" > styled/faas-community-varied-6.jpg
 ```
 
-you can also use the accompanying script `paint.sh`
+you can also use the accompanying script `pastiche.sh`
 
 usage:
 ```
-./paint.sh path_to_image_file style style_index
+./pastiche.sh path_to_image_file style style_index
 ```
 
 style can be monet or varied. style_index from 0 to 9 for monet, and from 0 to 30 for varied.
 > try them all, and see what you like!
 
 ```
-./paint.sh artist/input/tree.jpg varied 24
-./paint.sh artist/input/tree.jpg monet 2
+./pastiche.sh artist/input/tree.jpg varied 24
+./pastiche.sh artist/input/tree.jpg monet 2
 ```
 
-Explore some more outputs under [styled folder](styled) to get a better idea, or check the blog post.
+### Multi-style transfer
+
+We can also apply a multi-style blending several styles of a given model together, based on weights. e.g.: `{1:0.3, 10:0.5, 24:0.2}` to tell the artist to use style 1, style 2 and style 24 in the proportions `30% - 50% - 20%`.
+
+
+```
+curl -X POST -H X-style-name:varied -H X-which-styles:'{1:0.2,10:0.3,24:0.5}' \
+  --data-binary @artist/input/meme-test.jpg \
+  "http://localhost:8080/function/artist" > styled/meme-test-varied-1-10-24.jpg
+```
+
+Explore some more outputs under [styled folder](styled) or in this [album](https://photos.app.goo.gl/MCNnnrmlCSBwR9xH3) to get a better idea, or check the blog post.
