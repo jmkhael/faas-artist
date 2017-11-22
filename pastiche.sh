@@ -2,6 +2,11 @@ IMAGE=$1
 if [ -z "$IMAGE" ]; then
     echo "IMAGE is empty"
     echo usage: $0 image style style_index
+    echo e.g: $0 artist/input/tree.jpg varied 24
+    echo ""
+    echo "image is the path to an image file."
+    echo "style can be monet or varied."
+    echo "style_index from 0 to 9 for monet, and from 0 to 30 for varied."
     exit 1
 fi
 
